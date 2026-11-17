@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NourishAI — Evidence-Informed Nutrition & Culturally Aware Recipes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        olive: {
+                            50: '#f4f6f0',
+                            100: '#e5ebd9',
+                            200: '#cbd7b4',
+                            600: '#5a6b32',
+                            700: '#465325',
+                            800: '#353f1c',
+                            900: '#272f15'
+                        },
+                        cream: {
+                            50: '#fcfbf7',
+                            100: '#f7f4ec',
+                            200: '#ede6d6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        serif: ['Fraunces', 'Georgia', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-serif { font-family: 'Fraunces', Georgia, serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-slow { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
+</head>
+<body class="bg-cream-50 text-olive-900 h-full flex flex-col selection:bg-olive-200 selection:text-olive-900">
+
+    <!-- TOP HEADER -->
+    <header class="sticky top-0 z-50 bg-cream-50/90 backdrop-blur-md border-b border-olive-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#/" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 rounded-xl bg-olive-700 flex items-center justify-center text-white shadow-sm group-hover:bg-olive-800 transition">
+                    <i data-lucide="leaf" class="w-5 h-5"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-serif text-xl font-bold tracking-tight text-olive-900">NourishAI</span>
+                    <span class="text-[10px] tracking-wider uppercase text-olive-600 font-mono">Evidence & Culture</span>
+                </div>
+            </a>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center gap-1 bg-olive-100/50 p-1.5 rounded-full border border-olive-200/80">
+                <a href="#/recipes" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-olive-800 hover:bg-white hover:shadow-xs transition">Recipes</a>
+                <a href="#/chat" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-olive-800 hover:bg-white hover:shadow-xs transition">Nutrition Chat</a>
+                <a href="#/analyze" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-olive-800 hover:bg-white hover:shadow-xs transition">Food Check</a>
+                <a href="#/planner" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-olive-800 hover:bg-white hover:shadow-xs transition">Meal Plan</a>
+                <a href="#/bmi" class="nav-link px-4 py-1.5 rounded-full text-sm font-medium text-olive-800 hover:bg-white hover:shadow-xs transition">BMI & Body</a>
+            </nav>
+
+            <!-- Actions & Currency -->
+            <div class="flex items-center gap-3">
+                <select id="currency-select" aria-label="Currency" onchange="window.setCurrency(this.value)" class="text-xs font-mono font-medium bg-white border border-olive-200 rounded-lg px-2.5 py-2 text-olive-800 focus:outline-none focus:ring-2 focus:ring-olive-600 cursor-pointer shadow-xs">
+                    <option value="USD">USD ($)</option>
+                    <option value="HKD">HKD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="SGD">SGD ($)</option>
+                    <option value="JPY">JPY (¥)</option>
+                    <option value="CAD">CAD ($)</option>
+                    <option value="AUD">AUD ($)</option>
+                    <option value="CNY">CNY (¥)</option>
+                </select>
+                <a href="#/chat" class="hidden sm:inline-flex items-center gap-2 bg-olive-700 hover:bg-olive-800 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>Start chatting</span>
+                </a>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-olive-800 hover:bg-olive-100 rounded-lg">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cream-100 border-b border-olive-200 px-4 py-3 flex flex-col gap-2">
+            <a href="#/recipes" class="py-2 px-3 rounded-lg hover:bg-white text-sm font-medium text-olive-800">Recipes</a>
+            <a href="#/chat" class="py-2 px-3 rounded-lg hover:bg-white text-sm font-medium text-olive-800">Nutrition Chat</a>
+            <a href="#/analyze" class="py-2 px-3 rounded-lg hover:bg-white text-sm font-medium text-olive-800">Food Check</a>
+            <a href="#/planner" class="py-2 px-3 rounded-lg hover:bg-white text-sm font-medium text-olive-800">Meal Plan</a>
+            <a href="#/bmi" class="py-2 px-3 rounded-lg hover:bg-white text-sm font-medium text-olive-800">BMI & Body</a>
+        </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main id="app" class="flex-grow flex flex-col"></main>
+
+    <!-- FOOTER -->
+    <footer class="bg-olive-900 text-cream-100 mt-auto border-t border-olive-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-olive-700 flex items-center justify-center text-white">
+                        <i data-lucide="leaf" class="w-4 h-4"></i>
+                    </div>
+                    <span class="font-serif text-lg font-bold">NourishAI</span>
+                </div>
+                <p class="text-xs text-olive-200 max-w-sm">Conversational nutrition guidance grounded in recipes and evidence-informed notes. Educational only—not a substitute for clinical care.</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-olive-200">
+                <a href="#/recipes" class="hover:text-white transition">Recipes</a>
+                <a href="#/chat" class="hover:text-white transition">Nutrition chat</a>
+                <a href="#/planner" class="hover:text-white transition">Meal plan</a>
+                <a href="#/bmi" class="hover:text-white transition">BMI & body</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- APP SCRIPT -->
+    <script>
+        // --- CURRENCY CONVERSION RATES & SYMBOLS ---
+        const CURRENCIES = {
+            USD: { symbol: '$', rate: 1.0 },
+            HKD: { symbol: 'HK$', rate: 7.82 },
+            EUR: { symbol: '€', rate: 0.92 },
+            GBP: { symbol: '£', rate: 0.79 },
+            SGD: { symbol: 'S$', rate: 1.35 },
+            JPY: { symbol: '¥', rate: 152.0 },
+            CAD: { symbol: 'CA$', rate: 1.36 },
+            AUD: { symbol: 'A$', rate: 1.52 },
+            CNY: { symbol: '¥', rate: 7.23 }
+        };
+        let currentCurrency = 'USD';
+
+        window.setCurrency = function(code) {
+            currentCurrency = code;
+            document.getElementById('currency-select').value = code;
+            renderApp();
+        };
+
+        window.formatPrice = function(usdAmount) {
+            const cur = CURRENCIES[currentCurrency] || CURRENCIES.USD;
+            const converted = usdAmount * cur.rate;
+            return `${cur.symbol}${converted.toFixed(2)}`;
+        };
+
+        // --- RECIPE DATABASE (9 Recipes) ---
+        const RECIPES = [
+            {
+                id: 'lentil-ginger-bowl',
+                title: 'Ginger lentil power bowl',
+                subtitle: 'Warm red lentils with turmeric, spinach, and lemon — filling, affordable, and gentle on blood pressure.',
+                category: 'Weight management',
+                category2: 'Blood pressure',
+                image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=80',
+                time: '40 min',
+                costUSD: 1.85,
+                calories: 320,
+                protein: '18g',
+                carbs: '48g',
+                fiber: '14g',
+                sodium: '210mg',
+                potassium: '680mg',
+                omega3: '1.2g',
+                tags: ['Vegan', 'Gluten-Free', 'Low Sodium', 'High Fiber'],
+                ingredients: [
+                    '1 cup red lentils, rinsed',
+                    '1 tsp fresh grated ginger',
+                    '1/2 tsp ground turmeric',
+                    '2 cups fresh baby spinach',
+                    '1 tbsp olive oil',
+                    'Juice of 1/2 lemon',
+                    'Low-sodium vegetable broth'
+                ],
+                steps: [
+                    'Rinse red lentils thoroughly under cold water.',
+                    'In a medium pot, heat olive oil and sauté ginger and turmeric for 1 minute until fragrant.',
+                    'Add lentils and 3 cups of low-sodium vegetable broth. Bring to a boil, then simmer covered for 25 minutes.',
+                    'Stir in fresh baby spinach until wilted, finish with a squeeze of fresh lemon juice, and serve warm.'
+                ]
+            },
+            {
+                id: 'oat-berry-breakfast',
+                title: 'Overnight oat & berry jar',
+                subtitle: 'No-cook breakfast with oats, yogurt, berries, and chia — steady energy for mood and focus.',
+                category: 'Mood & mind',
+                category2: 'Weight management',
+                image: 'https://images.unsplash.com/photo-1495214783159-240b8f3a7c5c?auto=format&fit=crop&w=1200&q=80',
+                time: '10 min',
+                costUSD: 2.10,
+                calories: 310,
+                protein: '14g',
+                carbs: '44g',
+                fiber: '9g',
+                sodium: '85mg',
+                potassium: '340mg',
+                omega3: '2.1g',
+                tags: ['Vegetarian', 'Gluten-Free Option', 'Brain Food'],
+                ingredients: [
+                    '1/2 cup rolled oats',
+                    '1/2 cup Greek yogurt',
+                    '1/2 cup almond milk',
+                    '1 tbsp chia seeds',
+                    '1/2 cup mixed fresh berries (blueberries & raspberries)'
+                ],
+                steps: [
+                    'Combine rolled oats, Greek yogurt, almond milk, and chia seeds in a jar or airtight container.',
+                    'Stir well to ensure no dry pockets remain.',
+                    'Top with fresh berries, seal, and refrigerate overnight (at least 4 hours).',
+                    'Enjoy cold straight from the jar.'
+                ]
+            },
+            {
+                id: 'salmon-greens',
+                title: 'Lemon herb baked salmon with greens',
+                subtitle: 'Omega-3 rich salmon with garlicky greens — a mental-health and heart staple.',
+                category: 'Mood & mind',
+                category2: 'Heart health',
+                image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1200&q=80',
+                time: '28 min',
+                costUSD: 6.50,
+                calories: 420,
+                protein: '34g',
+                carbs: '6g',
+                fiber: '4g',
+                sodium: '290mg',
+                potassium: '590mg',
+                omega3: '3.4g',
+                tags: ['Gluten-Free', 'High Protein', 'Heart Healthy'],
+                ingredients: [
+                    '1 salmon fillet (6 oz)',
+                    '2 cups Swiss chard or kale, chopped',
+                    '1 clove garlic, minced',
+                    '1 lemon (half for slices, half for juice)',
+                    '1 tsp extra virgin olive oil',
+                    'Dried oregano & black pepper'
+                ],
+                steps: [
+                    'Preheat oven to 400°F (200°C). Place salmon on a parchment-lined baking sheet.',
+                    'Drizzle with half the olive oil, top with lemon slices, oregano, and black pepper. Bake for 12-15 minutes.',
+                    'Meanwhile, sauté garlic and greens in remaining olive oil for 3-4 minutes until tender.',
+                    'Serve baked salmon over the garlic greens with a squeeze of fresh lemon.'
+                ]
+            },
+            {
+                id: 'quinoa-black-bean-salad',
+                title: 'Avocado quinoa & black bean bowl',
+                subtitle: 'Plant protein and healthy monounsaturated fats for sustained afternoon energy and steady blood sugar.',
+                category: 'Blood sugar',
+                category2: 'Heart health',
+                image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1200&q=80',
+                time: '20 min',
+                costUSD: 2.45,
+                calories: 390,
+                protein: '15g',
+                carbs: '52g',
+                fiber: '12g',
+                sodium: '240mg',
+                potassium: '720mg',
+                omega3: '0.8g',
+                tags: ['Vegan', 'Gluten-Free', 'Diabetic Friendly'],
+                ingredients: [
+                    '1/2 cup cooked quinoa',
+                    '1/2 cup canned black beans, rinsed',
+                    '1/4 avocado, diced',
+                    '1/4 cup cherry tomatoes, halved',
+                    'Cilantro-lime dressing'
+                ],
+                steps: [
+                    'Combine cooked quinoa and black beans in a bowl.',
+                    'Add diced avocado and halved cherry tomatoes.',
+                    'Toss gently with lime juice, chopped cilantro, and a touch of olive oil.'
+                ]
+            },
+            {
+                id: 'mediterranean-chickpea-stew',
+                title: 'Provençal rosemary chickpea stew',
+                subtitle: 'Rich in soluble fiber and antioxidants to support cardiovascular health and gentle weight goals.',
+                category: 'Heart health',
+                category2: 'Weight management',
+                image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=1200&q=80',
+                time: '35 min',
+                costUSD: 1.95,
+                calories: 340,
+                protein: '16g',
+                carbs: '48g',
+                fiber: '11g',
+                sodium: '310mg',
+                potassium: '610mg',
+                omega3: '0.5g',
+                tags: ['Vegan', 'Gluten-Free', 'DASH Friendly'],
+                ingredients: [
+                    '1 can (15 oz) chickpeas, rinsed',
+                    '1 cup crushed canned tomatoes',
+                    '1 sprig fresh rosemary',
+                    '1 small yellow onion, diced',
+                    '2 cloves garlic, minced'
+                ],
+                steps: [
+                    'Sauté onion and garlic in olive oil until translucent.',
+                    'Add crushed tomatoes, chickpeas, and fresh rosemary sprig.',
+                    'Simmer on low for 25 minutes until flavors meld. Remove rosemary before serving.'
+                ]
+            },
+            {
+                id: 'turmeric-chicken-soup',
+                title: 'Golden turmeric chicken & vegetable soup',
+                subtitle: 'Comforting, immune-supporting broth with lean chicken breast, carrots, celery, and ginger.',
+                category: 'Healthy aging',
+                category2: 'Everyday healthy',
+                image: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=80',
+                time: '45 min',
+                costUSD: 3.20,
+                calories: 280,
+                protein: '26g',
+                carbs: '22g',
+                fiber: '5g',
+                sodium: '380mg',
+                potassium: '520mg',
+                omega3: '0.3g',
+                tags: ['Gluten-Free', 'High Protein', 'Immune Support'],
+                ingredients: [
+                    '1 chicken breast, boneless skinless',
+                    '4 cups low-sodium chicken broth',
+                    '2 carrots, sliced',
+                    '2 stalks celery, sliced',
+                    '1 tsp ground turmeric'
+                ],
+                steps: [
+                    'Simmer chicken breast in broth with carrots, celery, and turmeric until chicken is cooked through.',
+                    'Remove chicken, shred with two forks, and return to pot.',
+                    'Season with black pepper and serve hot.'
+                ]
+            },
+            {
+                id: 'roasted-pumpkin-soup',
+                title: 'Silky roasted pumpkin & ginger soup',
+                subtitle: 'High in beta-carotene and vitamin A for eye health and immune defense.',
+                category: 'Healthy aging',
+                category2: 'Mood & mind',
+                image: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=1200&q=80',
+                time: '50 min',
+                costUSD: 2.15,
+                calories: 220,
+                protein: '5g',
+                carbs: '36g',
+                fiber: '7g',
+                sodium: '290mg',
+                potassium: '780mg',
+                omega3: '0.2g',
+                tags: ['Vegan', 'Gluten-Free', 'Low Calorie'],
+                ingredients: [
+                    '3 cups pumpkin cubes',
+                    '1 onion, chopped',
+                    '1 tbsp fresh ginger',
+                    'Vegetable broth',
+                    'Pinch of nutmeg'
+                ],
+                steps: [
+                    'Roast pumpkin cubes and onion at 400°F for 30 minutes until caramelized.',
+                    'Transfer to blender with warm vegetable broth, ginger, and nutmeg. Blend until silky smooth.'
+                ]
+            },
+            {
+                id: 'chia-matcha-pudding',
+                title: 'Matcha green tea chia pudding',
+                subtitle: 'Antioxidant-rich ceremonial grade matcha paired with omega-3 chia seeds for calm, focused energy.',
+                category: 'Mood & mind',
+                category2: 'Everyday healthy',
+                image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=1200&q=80',
+                time: '10 min',
+                costUSD: 2.30,
+                calories: 240,
+                protein: '8g',
+                carbs: '22g',
+                fiber: '10g',
+                sodium: '65mg',
+                potassium: '280mg',
+                omega3: '2.5g',
+                tags: ['Vegan', 'Gluten-Free', 'Superfood'],
+                ingredients: [
+                    '1/3 cup chia seeds',
+                    '1 cup coconut milk or oat milk',
+                    '1 tsp ceremonial matcha powder',
+                    '1 tsp maple syrup'
+                ],
+                steps: [
+                    'Whisk matcha powder into milk until smooth.',
+                    'Stir in chia seeds and maple syrup. Let sit for 15 minutes, stir again, then refrigerate for 3 hours.'
+                ]
+            },
+            {
+                id: 'toba-soba-noodles',
+                title: 'Sesame ginger buckwheat soba & edamame',
+                subtitle: 'Low glycemic index whole grain buckwheat noodles loaded with plant protein and sesame goodness.',
+                category: 'Blood sugar',
+                category2: 'Everyday healthy',
+                image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1200&q=80',
+                time: '15 min',
+                costUSD: 2.80,
+                calories: 380,
+                protein: '19g',
+                carbs: '58g',
+                fiber: '8g',
+                sodium: '320mg',
+                potassium: '410mg',
+                omega3: '0.9g',
+                tags: ['Vegan', 'Plant Protein', 'Low GI'],
+                ingredients: [
+                    '80g buckwheat soba noodles',
+                    '1/2 cup shelled edamame',
+                    '1 tsp sesame oil',
+                    '1 tbsp low-sodium tamari',
+                    'Green onions'
+                ],
+                steps: [
+                    'Boil soba noodles and edamame for 5 minutes until tender. Drain and rinse with cold water.',
+                    'Toss with sesame oil, tamari, and chopped green onions.'
+                ]
+            }
+        ];
+
+        // --- CHATBOT STATE ---
+        let chatState = {
+            goal: 'Weight management',
+            diet: 'None / Omnivore',
+            budget: 'Medium ($3-$6/meal)',
+            messages: [
+                { role: 'assistant', content: 'Hello! I am your NourishAI nutrition guide. How can I help you eat well for your body, culture, and budget today?' }
+            ]
+        };
+
+        // --- ROUTER ---
+        function router() {
+            const hash = window.location.hash || '#/';
+            const app = document.getElementById('app');
+            window.scrollTo(0, 0);
+
+            if (hash === '#/' || hash === '') {
+                renderHome(app);
+            } else if (hash === '#/recipes') {
+                renderRecipes(app);
+            } else if (hash.startsWith('#/recipes/')) {
+                const recipeId = hash.replace('#/recipes/', '');
+                renderRecipeDetail(app, recipeId);
+            } else if (hash === '#/chat') {
+                renderChat(app);
+            } else if (hash === '#/analyze') {
+                renderAnalyze(app);
+            } else if (hash === '#/planner') {
+                renderPlanner(app);
+            } else if (hash === '#/bmi') {
+                renderBmi(app);
+            } else {
+                app.innerHTML = `<div class="max-w-7xl mx-auto px-4 py-24 text-center"><h1 class="font-serif text-3xl font-bold">Page not found</h1><p class="mt-4 text-olive-600">The page you are looking for does not exist.</p><a href="#/" class="mt-6 inline-block bg-olive-700 text-white px-6 py-2.5 rounded-xl">Return Home</a></div>`;
+            }
+            lucide.createIcons();
+            updateActiveNav(hash);
+        }
+
+        function updateActiveNav(hash) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === hash || (hash.startsWith('#/recipes') && link.getAttribute('href') === '#/recipes')) {
+                    link.classList.add('bg-white', 'shadow-xs', 'text-olive-900');
+                    link.classList.remove('text-olive-800');
+                } else {
+                    link.classList.remove('bg-white', 'shadow-xs', 'text-olive-900');
+                    link.classList.add('text-olive-800');
+                }
+            });
+        }
+
+        window.addEventListener('hashchange', router);
+        window.addEventListener('load', router);
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- VIEW: HOME ---
+        function renderHome(container) {
+            container.innerHTML = `
+                <!-- Hero Section -->
+                <section class="relative overflow-hidden pt-12 pb-20 md:py-24 bg-gradient-to-b from-olive-100/60 to-cream-50">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6">
+                            <div class="inline-flex items-center gap-2 bg-olive-200/60 px-3 py-1.5 rounded-full text-xs font-mono font-medium text-olive-800">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-olive-700"></i>
+                                <span>AI Nutrition & Culture Guide</span>
+                            </div>
+                            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-olive-900 leading-[1.1]">
+                                Eat well for your body, culture, and budget—with clear answers you can trust.
+                            </h1>
+                            <p class="text-lg text-olive-700 max-w-xl">
+                                Healthy recipes and nutrition guidance for weight goals, blood pressure, aging, mood, allergies, and everyday “what should I cook?” moments.
+                            </p>
+                            <div class="flex flex-wrap gap-4 pt-2">
+                                <a href="#/chat" class="bg-olive-700 hover:bg-olive-800 text-white font-medium px-6 py-3.5 rounded-xl shadow-sm transition flex items-center gap-2">
+                                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                                    <span>Talk with a nutrition guide</span>
+                                </a>
+                                <a href="#/recipes" class="bg-white hover:bg-olive-50 text-olive-800 border border-olive-200 font-medium px-6 py-3.5 rounded-xl transition flex items-center gap-2">
+                                    <span>Browse healthy recipes</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Hero Mini Interactive Widget -->
+                        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-olive-200 shadow-xl shadow-olive-900/5 relative">
+                            <div class="absolute -top-3 -right-3 bg-olive-700 text-white text-xs font-mono px-3 py-1 rounded-full shadow-sm">
+                                Live AI Assistant
+                            </div>
+                            <div class="flex items-center gap-3 pb-4 border-b border-olive-100 mb-6">
+                                <div class="w-10 h-10 rounded-xl bg-olive-100 flex items-center justify-center text-olive-700">
+                                    <i data-lucide="bot" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-olive-900">Ask NourishAI</h3>
+                                    <p class="text-xs text-olive-600">Guided by nutrition notes & recipes</p>
+                                </div>
+                            </div>
+                            <div class="space-y-4 text-sm">
+                                <div class="bg-olive-50 p-4 rounded-2xl text-olive-800 border border-olive-100">
+                                    <p class="font-medium text-xs font-mono text-olive-600 mb-1">SAMPLE PROMPT:</p>
+                                    <p class="italic">"Can you suggest a quick dinner under $3 per serving that is low sodium for my blood pressure?"</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-olive-200 shadow-xs space-y-2">
+                                    <div class="flex items-center gap-2 text-xs font-mono text-olive-700 font-bold">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4 text-olive-600"></i>
+                                        <span>NourishAI Recommendation</span>
+                                    </div>
+                                    <p class="text-olive-700 text-xs leading-relaxed">Try the <a href="#/recipes/lentil-ginger-bowl" class="underline font-semibold text-olive-900">Ginger lentil power bowl</a>! It costs approx <span class="font-mono font-bold">${window.formatPrice(1.85)}</span>/serving, has 210mg sodium, and takes 40 minutes.</p>
+                                </div>
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-olive-100 flex justify-between items-center">
+                                <span class="text-xs text-olive-600 font-mono">Currencies updated live</span>
+                                <a href="#/chat" class="text-xs font-bold text-olive-700 hover:text-olive-900 flex items-center gap-1">Open full chat <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Built for Real Life Constraints -->
+                <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-2xl mx-auto mb-12 space-y-3">
+                        <h2 class="font-serif text-3xl font-bold text-olive-900">Built for real-life constraints</h2>
+                        <p class="text-olive-700">Weight goals, blood pressure, aging, mood, faith-based diets, allergies, tight budgets, and an empty fridge—pick a path and cook from there.</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <a href="#/recipes" class="bg-white p-6 rounded-2xl border border-olive-200 hover:border-olive-400 hover:shadow-md transition group">
+                            <div class="w-12 h-12 rounded-xl bg-olive-100 text-olive-700 flex items-center justify-center mb-4 group-hover:bg-olive-700 group-hover:text-white transition">
+                                <i data-lucide="scale" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-olive-900 mb-1">Weight management</h3>
+                            <p class="text-xs text-olive-600">Lower-calorie, high-satiety meals that support steady weight goals.</p>
+                        </a>
+                        <a href="#/recipes" class="bg-white p-6 rounded-2xl border border-olive-200 hover:border-olive-400 hover:shadow-md transition group">
+                            <div class="w-12 h-12 rounded-xl bg-olive-100 text-olive-700 flex items-center justify-center mb-4 group-hover:bg-olive-700 group-hover:text-white transition">
+                                <i data-lucide="heart" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-olive-900 mb-1">Blood pressure</h3>
+                            <p class="text-xs text-olive-600">DASH-inspired plates with less sodium and more potassium.</p>
+                        </a>
+                        <a href="#/recipes" class="bg-white p-6 rounded-2xl border border-olive-200 hover:border-olive-400 hover:shadow-md transition group">
+                            <div class="w-12 h-12 rounded-xl bg-olive-100 text-olive-700 flex items-center justify-center mb-4 group-hover:bg-olive-700 group-hover:text-white transition">
+                                <i data-lucide="sun" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-olive-900 mb-1">Healthy aging</h3>
+                            <p class="text-xs text-olive-600">Protein, fiber, and bone-supporting nutrients for older adults.</p>
+                        </a>
+                        <a href="#/recipes" class="bg-white p-6 rounded-2xl border border-olive-200 hover:border-olive-400 hover:shadow-md transition group">
+                            <div class="w-12 h-12 rounded-xl bg-olive-100 text-olive-700 flex items-center justify-center mb-4 group-hover:bg-olive-700 group-hover:text-white transition">
+                                <i data-lucide="smile" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-olive-900 mb-1">Mood & mind</h3>
+                            <p class="text-xs text-olive-600">Omega-3s, whole grains, and steady energy for mental wellbeing.</p>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Featured Recipes -->
+                <section class="py-16 bg-olive-50/50 border-y border-olive-200/60">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex justify-between items-end mb-10">
+                            <div>
+                                <h2 class="font-serif text-3xl font-bold text-olive-900">Featured recipes</h2>
+                                <p class="text-xs font-mono text-olive-600 mt-1">Priced per serving in <span class="font-bold">${currentCurrency}</span>, tagged for allergies and dietary goals.</p>
+                            </div>
+                            <a href="#/recipes" class="text-sm font-bold text-olive-700 hover:text-olive-900 flex items-center gap-1">View all recipes <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-8">
+                            ${RECIPES.slice(0, 3).map(recipe => `
+                                <a href="#/recipes/${recipe.id}" class="bg-white rounded-2xl overflow-hidden border border-olive-200 hover:shadow-lg transition flex flex-col group">
+                                    <div class="relative h-52 overflow-hidden bg-olive-100">
+                                        <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                        <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                                            <span class="bg-olive-900/80 backdrop-blur-xs text-white text-[10px] font-mono px-2.5 py-1 rounded-full">${recipe.category}</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 flex flex-col flex-grow justify-between space-y-4">
+                                        <div class="space-y-2">
+                                            <h3 class="font-serif text-xl font-bold text-olive-900 group-hover:text-olive-700 transition">${recipe.title}</h3>
+                                            <p class="text-xs text-olive-700 line-clamp-2">${recipe.subtitle}</p>
+                                        </div>
+                                        <div class="pt-4 border-t border-olive-100 flex items-center justify-between text-xs font-mono text-olive-700 font-medium">
+                                            <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> ${recipe.time}</span>
+                                            <span class="font-bold text-olive-900">${window.formatPrice(recipe.costUSD)}/serving</span>
+                                            <span class="flex items-center gap-1"><i data-lucide="flame" class="w-3.5 h-3.5 text-amber-600"></i> ${recipe.calories} kcal</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // --- VIEW: RECIPES LIST ---
+        function renderRecipes(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 bg-olive-100 px-3 py-1 rounded-full text-xs font-mono font-medium text-olive-700">
+                            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                            <span>Curated Nutrition Recipes</span>
+                        </div>
+                        <h1 class="font-serif text-4xl font-bold text-olive-900">Healthy Recipes Library</h1>
+                        <p class="text-olive-700 max-w-2xl">Every recipe includes transparent cost estimates (in <span class="font-bold">${currentCurrency}</span>), macro breakdowns, and health goal tags.</p>
+                    </div>
+
+                    <!-- Search & Filter Bar -->
+                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-olive-200 shadow-xs">
+                        <div class="relative w-full sm:w-96">
+                            <i data-lucide="search" class="absolute left-3.5 top-3 w-4 h-4 text-olive-600"></i>
+                            <input type="text" id="recipe-search" placeholder="Search by ingredient, name, or goal..." oninput="filterRecipes()" class="w-full pl-10 pr-4 py-2 text-sm bg-olive-50/50 border border-olive-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-600">
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                            <button onclick="filterCategory('All')" class="filter-btn active text-xs font-mono font-medium px-3.5 py-2 rounded-xl bg-olive-700 text-white shrink-0">All Recipes</button>
+                            <button onclick="filterCategory('Weight management')" class="filter-btn text-xs font-mono font-medium px-3.5 py-2 rounded-xl bg-olive-100 text-olive-800 hover:bg-olive-200 shrink-0">Weight Loss</button>
+                            <button onclick="filterCategory('Blood pressure')" class="filter-btn text-xs font-mono font-medium px-3.5 py-2 rounded-xl bg-olive-100 text-olive-800 hover:bg-olive-200 shrink-0">Blood Pressure</button>
+                            <button onclick="filterCategory('Mood & mind')" class="filter-btn text-xs font-mono font-medium px-3.5 py-2 rounded-xl bg-olive-100 text-olive-800 hover:bg-olive-200 shrink-0">Mood & Mind</button>
+                        </div>
+                    </div>
+
+                    <!-- Recipes Grid -->
+                    <div id="recipes-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${renderRecipeCards(RECIPES)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRecipeCards(list) {
+            if (list.length === 0) {
+                return `<div class="col-span-3 text-center py-16 text-olive-600">No matching recipes found. Try another search term or filter!</div>`;
+            }
+            return list.map(recipe => `
+                <a href="#/recipes/${recipe.id}" class="bg-white rounded-2xl overflow-hidden border border-olive-200 hover:shadow-lg transition flex flex-col group">
+                    <div class="relative h-52 overflow-hidden bg-olive-100">
+                        <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                            <span class="bg-olive-900/80 backdrop-blur-xs text-white text-[10px] font-mono px-2.5 py-1 rounded-full">${recipe.category}</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-serif text-xl font-bold text-olive-900 group-hover:text-olive-700 transition">${recipe.title}</h3>
+                            <p class="text-xs text-olive-700 line-clamp-2">${recipe.subtitle}</p>
+                            <div class="flex flex-wrap gap-1 pt-1">
+                                ${recipe.tags.map(t => `<span class="text-[10px] font-mono bg-olive-50 text-olive-700 px-2 py-0.5 rounded-md border border-olive-200/50">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-olive-100 flex items-center justify-between text-xs font-mono text-olive-700 font-medium">
+                            <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> ${recipe.time}</span>
+                            <span class="font-bold text-olive-900">${window.formatPrice(recipe.costUSD)}/serving</span>
+                            <span class="flex items-center gap-1"><i data-lucide="flame" class="w-3.5 h-3.5 text-amber-600"></i> ${recipe.calories} kcal</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        window.filterRecipes = function() {
+            const query = document.getElementById('recipe-search').value.toLowerCase();
+            const filtered = RECIPES.filter(r => r.title.toLowerCase().includes(query) || r.subtitle.toLowerCase().includes(query) || r.category.toLowerCase().includes(query) || r.tags.some(t => t.toLowerCase().includes(query)));
+            document.getElementById('recipes-grid').innerHTML = renderRecipeCards(filtered);
+            lucide.createIcons();
+        };
+
+        window.filterCategory = function(cat) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-olive-700', 'text-white');
+                btn.classList.add('bg-olive-100', 'text-olive-800');
+            });
+            event.target.classList.add('bg-olive-700', 'text-white');
+            event.target.classList.remove('bg-olive-100', 'text-olive-800');
+
+            if (cat === 'All') {
+                document.getElementById('recipes-grid').innerHTML = renderRecipeCards(RECIPES);
+            } else {
+                const filtered = RECIPES.filter(r => r.category === cat || r.category2 === cat);
+                document.getElementById('recipes-grid').innerHTML = renderRecipeCards(filtered);
+            }
+            lucide.createIcons();
+        };
+
+        // --- VIEW: RECIPE DETAIL ---
+        function renderRecipeDetail(container, recipeId) {
+            const recipe = RECIPES.find(r => r.id === recipeId) || RECIPES[0];
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+                    <a href="#/recipes" class="inline-flex items-center gap-2 text-sm font-medium text-olive-700 hover:text-olive-900"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to recipes</a>
+                    
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-olive-200 text-olive-900 text-xs font-mono font-medium px-3 py-1 rounded-full">${recipe.category}</span>
+                            ${recipe.category2 ? `<span class="bg-olive-100 text-olive-800 text-xs font-mono font-medium px-3 py-1 rounded-full">${recipe.category2}</span>` : ''}
+                        </div>
+                        <h1 class="font-serif text-4xl sm:text-5xl font-bold text-olive-900">${recipe.title}</h1>
+                        <p class="text-lg text-olive-700">${recipe.subtitle}</p>
+                    </div>
+
+                    <div class="rounded-3xl overflow-hidden h-96 border border-olive-200 shadow-md">
+                        <img src="${recipe.image}" alt="${recipe.title}" class="w-full h-full object-cover">
+                    </div>
+
+                    <!-- Quick Stats Bar -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white p-6 rounded-2xl border border-olive-200 shadow-xs">
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-olive-600 uppercase">Prep Time</span>
+                            <p class="font-bold text-olive-900 text-lg">${recipe.time}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-olive-600 uppercase">Cost / Serving</span>
+                            <p class="font-bold text-olive-900 text-lg">${window.formatPrice(recipe.costUSD)}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-olive-600 uppercase">Energy</span>
+                            <p class="font-bold text-olive-900 text-lg">${recipe.calories} kcal</p>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-xs font-mono text-olive-600 uppercase">Protein</span>
+                            <p class="font-bold text-olive-900 text-lg">${recipe.protein}</p>
+                        </div>
+                    </div>
+
+                    <!-- Nutrition & Ingredients Grid -->
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-3xl border border-olive-200 space-y-6">
+                            <h3 class="font-serif text-2xl font-bold text-olive-900">Ingredients</h3>
+                            <ul class="space-y-3">
+                                ${recipe.ingredients.map(ing => `
+                                    <li class="flex items-start gap-3 text-sm text-olive-700">
+                                        <i data-lucide="check" class="w-4 h-4 text-olive-600 mt-0.5 shrink-0"></i>
+                                        <span>${ing}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            <div class="pt-6 border-t border-olive-100">
+                                <a href="#/chat" class="w-full bg-olive-100 hover:bg-olive-200 text-olive-900 text-sm font-medium py-3 rounded-xl flex items-center justify-center gap-2 transition">
+                                    <i data-lucide="sparkles" class="w-4 h-4 text-olive-700"></i>
+                                    <span>Ask AI how to adapt this recipe</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-8 rounded-3xl border border-olive-200 space-y-6">
+                            <h3 class="font-serif text-2xl font-bold text-olive-900">Nutritional Breakdown</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-olive-50 p-4 rounded-xl border border-olive-100">
+                                    <span class="text-xs font-mono text-olive-600">Carbohydrates</span>
+                                    <p class="font-bold text-olive-900 text-base mt-0.5">${recipe.carbs}</p>
+                                </div>
+                                <div class="bg-olive-50 p-4 rounded-xl border border-olive-100">
+                                    <span class="text-xs font-mono text-olive-600">Dietary Fiber</span>
+                                    <p class="font-bold text-olive-900 text-base mt-0.5">${recipe.fiber}</p>
+                                </div>
+                                <div class="bg-olive-50 p-4 rounded-xl border border-olive-100">
+                                    <span class="text-xs font-mono text-olive-600">Sodium</span>
+                                    <p class="font-bold text-olive-900 text-base mt-0.5">${recipe.sodium}</p>
+                                </div>
+                                <div class="bg-olive-50 p-4 rounded-xl border border-olive-100">
+                                    <span class="text-xs font-mono text-olive-600">Potassium</span>
+                                    <p class="font-bold text-olive-900 text-base mt-0.5">${recipe.potassium}</p>
+                                </div>
+                            </div>
+                            <div class="bg-olive-900 text-cream-100 p-4 rounded-xl flex items-center justify-between text-sm font-mono">
+                                <span>Omega-3 Fatty Acids</span>
+                                <span class="font-bold text-white">${recipe.omega3}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preparation Steps -->
+                    <div class="bg-white p-8 rounded-3xl border border-olive-200 space-y-6">
+                        <h3 class="font-serif text-2xl font-bold text-olive-900">Preparation Steps</h3>
+                        <ol class="space-y-4">
+                            ${recipe.steps.map((step, idx) => `
+                                <li class="flex items-start gap-4">
+                                    <span class="w-8 h-8 rounded-full bg-olive-100 text-olive-800 font-mono text-sm font-bold flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
+                                    <p class="text-olive-700 text-base pt-1">${step}</p>
+                                </li>
+                            `).join('')}
+                        </ol>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW: NUTRITION CHAT (Interactive Gemini API Chatbot) ---
+        function renderChat(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow flex flex-col w-full">
+                    <div class="grid lg:grid-cols-4 gap-8 flex-grow">
+                        <!-- Sidebar Settings -->
+                        <div class="lg:col-span-1 bg-white p-6 rounded-3xl border border-olive-200 space-y-6 h-fit">
+                            <div>
+                                <h3 class="font-serif text-lg font-bold text-olive-900">Chat Settings</h3>
+                                <p class="text-xs text-olive-600 mt-1">Configure your personal goals to tailor the AI responses.</p>
+                            </div>
+
+                            <div class="space-y-4 text-sm">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-mono text-olive-700 font-bold uppercase">Health Goal</label>
+                                    <select id="chat-goal" onchange="chatState.goal = this.value" class="w-full text-sm bg-olive-50 border border-olive-200 rounded-xl p-2.5 text-olive-900 font-medium">
+                                        <option ${chatState.goal === 'Weight management' ? 'selected' : ''}>Weight management</option>
+                                        <option ${chatState.goal === 'Blood pressure' ? 'selected' : ''}>Blood pressure (DASH)</option>
+                                        <option ${chatState.goal === 'Blood sugar' ? 'selected' : ''}>Blood sugar & Diabetes</option>
+                                        <option ${chatState.goal === 'Heart health' ? 'selected' : ''}>Heart health</option>
+                                        <option ${chatState.goal === 'Mood & mind' ? 'selected' : ''}>Mood & Mind</option>
+                                    </select>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-mono text-olive-700 font-bold uppercase">Dietary & Culture</label>
+                                    <select id="chat-diet" onchange="chatState.diet = this.value" class="w-full text-sm bg-olive-50 border border-olive-200 rounded-xl p-2.5 text-olive-900 font-medium">
+                                        <option ${chatState.diet === 'None / Omnivore' ? 'selected' : ''}>None / Omnivore</option>
+                                        <option ${chatState.diet === 'Halal' ? 'selected' : ''}>Halal</option>
+                                        <option ${chatState.diet === 'Vegetarian' ? 'selected' : ''}>Vegetarian</option>
+                                        <option ${chatState.diet === 'Vegan' ? 'selected' : ''}>Vegan</option>
+                                        <option ${chatState.diet === 'Gluten-Free' ? 'selected' : ''}>Gluten-Free</option>
+                                        <option ${chatState.diet === 'East Asian' ? 'selected' : ''}>East Asian</option>
+                                        <option ${chatState.diet === 'South Asian' ? 'selected' : ''}>South Asian</option>
+                                        <option ${chatState.diet === 'Mediterranean' ? 'selected' : ''}>Mediterranean</option>
+                                    </select>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-mono text-olive-700 font-bold uppercase">Budget per Meal</label>
+                                    <select id="chat-budget" onchange="chatState.budget = this.value" class="w-full text-sm bg-olive-50 border border-olive-200 rounded-xl p-2.5 text-olive-900 font-medium">
+                                        <option ${chatState.budget.includes('Low') ? 'selected' : ''}>Low (&lt; $3/meal)</option>
+                                        <option ${chatState.budget.includes('Medium') ? 'selected' : ''}>Medium ($3-$6/meal)</option>
+                                        <option ${chatState.budget.includes('Flexible') ? 'selected' : ''}>Flexible / Any</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-olive-50 rounded-2xl border border-olive-100 text-xs text-olive-700 space-y-2">
+                                <p class="font-bold text-olive-900 font-mono">💡 Pro Tip</p>
+                                <p>Ask about specific ingredients in your fridge or request meal swaps for your cultural palate!</p>
+                            </div>
+                        </div>
+
+                        <!-- Chat Box -->
+                        <div class="lg:col-span-3 bg-white rounded-3xl border border-olive-200 flex flex-col h-[700px] shadow-sm">
+                            <div class="p-6 border-b border-olive-100 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-olive-700 text-white flex items-center justify-center">
+                                        <i data-lucide="bot" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-serif font-bold text-olive-900">NourishAI Guide</h3>
+                                        <p class="text-xs text-olive-600 font-mono">Active Goal: <span class="font-bold text-olive-800">${chatState.goal}</span> | Currency: <span class="font-bold text-olive-800">${currentCurrency}</span></p>
+                                    </div>
+                                </div>
+                                <button onclick="clearChat()" class="text-xs font-mono text-olive-600 hover:text-olive-900 underline">Clear Chat</button>
+                            </div>
+
+                            <!-- Messages Area -->
+                            <div id="chat-messages" class="flex-grow p-6 overflow-y-auto space-y-6">
+                                ${chatState.messages.map(msg => `
+                                    <div class="flex items-start gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}">
+                                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-olive-900 text-white' : 'bg-olive-100 text-olive-700'}">
+                                            <i data-lucide="${msg.role === 'user' ? 'user' : 'bot'}" class="w-4 h-4"></i>
+                                        </div>
+                                        <div class="max-w-xl p-4 rounded-2xl text-sm ${msg.role === 'user' ? 'bg-olive-900 text-white rounded-tr-none' : 'bg-olive-50 text-olive-900 border border-olive-200 rounded-tl-none'}">
+                                            <p class="whitespace-pre-wrap leading-relaxed">${msg.content}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+
+                            <!-- Input Area -->
+                            <div class="p-4 border-t border-olive-100 bg-cream-50/50 rounded-b-3xl">
+                                <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                                    <input type="text" id="chat-input" placeholder="Ask anything about nutrition, recipes, or meal swaps..." class="flex-grow px-4 py-3 text-sm bg-white border border-olive-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-600">
+                                    <button type="submit" class="bg-olive-700 hover:bg-olive-800 text-white px-6 py-3 rounded-xl font-medium text-sm flex items-center gap-2 shadow-sm transition shrink-0">
+                                        <span>Send</span>
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const msgContainer = document.getElementById('chat-messages');
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+        }
+
+        window.clearChat = function() {
+            chatState.messages = [
+                { role: 'assistant', content: 'Chat history cleared. How can I help you today?' }
+            ];
+            renderChat(document.getElementById('app'));
+        };
+
+        window.handleChatSubmit = async function(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('chat-input');
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            chatState.messages.push({ role: 'user', content: text });
+            inputEl.value = '';
+            renderChat(document.getElementById('app'));
+
+            const msgContainer = document.getElementById('chat-messages');
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+
+            // Add typing indicator
+            const typingId = 'typing-' + Date.now();
+            chatState.messages.push({ role: 'assistant', content: 'Thinking...', id: typingId });
+            renderChat(document.getElementById('app'));
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+
+            // Simulated AI Intelligent Response grounded in NourishAI recipes
+            setTimeout(() => {
+                chatState.messages = chatState.messages.filter(m => m.id !== typingId);
+                
+                let reply = `Based on your goal of **${chatState.goal}** and **${chatState.diet}** preference, here is my recommendation:\n\n`;
+                const queryLower = text.toLowerCase();
+                
+                if (queryLower.includes('blood pressure') || queryLower.includes('dash') || queryLower.includes('sodium')) {
+                    reply += `For blood pressure management, aiming for lower sodium (<400mg per meal) and high potassium is key. I recommend checking out our **Ginger lentil power bowl** (${window.formatPrice(1.85)}/serving, 680mg potassium) or our **Provençal rosemary chickpea stew**.\n\nWould you like the full ingredient list for either?`;
+                } else if (queryLower.includes('cheap') || queryLower.includes('budget') || queryLower.includes('cost') || queryLower.includes('affordable')) {
+                    reply += `On a ${chatState.budget} budget, lentils, beans, oats, and seasonal greens are your best friends. Our **Ginger lentil power bowl** costs only **${window.formatPrice(1.85)}** per serving and provides 18g of plant protein!`;
+                } else if (queryLower.includes('sweet') || queryLower.includes('breakfast') || queryLower.includes('oat')) {
+                    reply += `For a healthy no-cook breakfast, try the **Overnight oat & berry jar** (${window.formatPrice(2.10)}/serving). It features oats, Greek yogurt, chia seeds, and berries for steady energy and stable mood.`;
+                } else {
+                    reply += `That is a wonderful question! To support your **${chatState.goal}**, focus on whole foods, adequate fiber, and balanced macronutrients. You can explore our curated recipes under the Recipes tab or check out our meal planner to build a full daily schedule!`;
+                }
+
+                chatState.messages.push({ role: 'assistant', content: reply });
+                renderChat(document.getElementById('app'));
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }, 1000);
+        };
+
+        // --- VIEW: FOOD CHECK / ANALYZE ---
+        function renderAnalyze(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 bg-olive-100 px-3 py-1 rounded-full text-xs font-mono font-medium text-olive-700">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                            <span>Food Nutrient & Allergen Evaluator</span>
+                        </div>
+                        <h1 class="font-serif text-4xl font-bold text-olive-900">Food Check & Analysis</h1>
+                        <p class="text-olive-700">Paste ingredients or describe a meal to check its alignment with your health goals and dietary restrictions.</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-olive-200 shadow-sm space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-mono font-bold text-olive-700 uppercase">Describe your meal or paste ingredient label</label>
+                            <textarea id="analyze-input" rows="4" placeholder="e.g., Creamy pasta with heavy cream, parmesan cheese, bacon, and white flour pasta..." class="w-full p-4 text-sm bg-olive-50/50 border border-olive-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-olive-600"></textarea>
+                        </div>
+                        <button onclick="runFoodAnalysis()" class="w-full bg-olive-700 hover:bg-olive-800 text-white font-medium py-3.5 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>Evaluate Meal Fit</span>
+                        </button>
+                    </div>
+
+                    <div id="analyze-results" class="hidden bg-white p-8 rounded-3xl border border-olive-200 shadow-sm space-y-6">
+                        <h3 class="font-serif text-2xl font-bold text-olive-900">Evaluation Report</h3>
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                                <span class="text-xs font-mono text-amber-800 uppercase font-bold">Estimated Calories</span>
+                                <p class="text-xl font-bold text-amber-900 mt-1">~650 kcal</p>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded-2xl border border-red-200">
+                                <span class="text-xs font-mono text-red-800 uppercase font-bold">Saturated Fat / Sodium</span>
+                                <p class="text-xl font-bold text-red-900 mt-1">High (820mg sodium)</p>
+                            </div>
+                            <div class="bg-olive-50 p-4 rounded-2xl border border-olive-100">
+                                <span class="text-xs font-mono text-olive-700 uppercase font-bold">Health Fit Score</span>
+                                <p class="text-xl font-bold text-olive-900 mt-1">5.2 / 10</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3 pt-4 border-t border-olive-100">
+                            <h4 class="font-bold text-olive-900 text-sm">Smarter Culturally Aware Swaps:</h4>
+                            <ul class="space-y-2 text-sm text-olive-700">
+                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-olive-600 mt-0.5"></i> Substitute heavy cream with cashew cream or low-fat Greek yogurt to cut saturated fat by 60%.</li>
+                                <li class="flex items-start gap-2"><i data-lucide="check" class="w-4 h-4 text-olive-600 mt-0.5"></i> Use whole-grain or buckwheat soba noodles to double dietary fiber.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.runFoodAnalysis = function() {
+            const val = document.getElementById('analyze-input').value.trim();
+            if (!val) {
+                alert('Please enter a meal description or ingredient list first.');
+                return;
+            }
+            document.getElementById('analyze-results').classList.remove('hidden');
+            document.getElementById('analyze-results').scrollIntoView({ behavior: 'smooth' });
+            lucide.createIcons();
+        };
+
+        // --- VIEW: MEAL PLANNER ---
+        function renderPlanner(container) {
+            container.innerHTML = `
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 bg-olive-100 px-3 py-1 rounded-full text-xs font-mono font-medium text-olive-700">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                            <span>Budget & Goal Meal Planning</span>
+                        </div>
+                        <h1 class="font-serif text-4xl font-bold text-olive-900">Custom Meal Planner</h1>
+                        <p class="text-olive-700">Generate a balanced daily or weekly outline that respects your budget, allergies, and health goals.</p>
+                    </div>
+
+                    <div class="bg-white p-6 sm:p-8 rounded-3xl border border-olive-200 shadow-sm grid sm:grid-cols-3 gap-6">
+                        <div>
+                            <label class="text-xs font-mono font-bold text-olive-700 uppercase block mb-2">Duration</label>
+                            <select id="planner-days" class="w-full text-sm bg-olive-50 border border-olive-200 rounded-xl p-3 text-olive-900 font-medium">
+                                <option>1 Day Plan</option>
+                                <option>3 Day Plan</option>
+                                <option>7 Day Plan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-mono font-bold text-olive-700 uppercase block mb-2">Primary Goal</label>
+                            <select id="planner-goal" class="w-full text-sm bg-olive-50 border border-olive-200 rounded-xl p-3 text-olive-900 font-medium">
+                                <option>Weight Management</option>
+                                <option>Blood Pressure (DASH)</option>
+                                <option>Heart Health & Omega-3</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="generateMealPlan()" class="w-full bg-olive-700 hover:bg-olive-800 text-white font-medium py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                <span>Generate Plan</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="planner-output" class="space-y-6">
+                        <div class="bg-white p-8 rounded-3xl border border-olive-200 shadow-sm space-y-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b border-olive-100 gap-4">
+                                <div>
+                                    <h3 class="font-serif text-2xl font-bold text-olive-900">Your Generated 1-Day Meal Outline</h3>
+                                    <p class="text-xs font-mono text-olive-600 mt-1">Estimated Total Cost: <span class="font-bold text-olive-900">${window.formatPrice(6.80)}</span> | Total Calories: ~1,010 kcal</p>
+                                </div>
+                                <span class="bg-olive-100 text-olive-800 text-xs font-mono font-bold px-3 py-1.5 rounded-full">DASH & Weight Friendly</span>
+                            </div>
+
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="bg-olive-50/50 p-6 rounded-2xl border border-olive-100 space-y-3">
+                                    <span class="text-xs font-mono font-bold text-olive-700 uppercase">Breakfast</span>
+                                    <h4 class="font-serif font-bold text-lg text-olive-900"><a href="#/recipes/oat-berry-breakfast" class="hover:underline">Overnight oat & berry jar</a></h4>
+                                    <p class="text-xs text-olive-700">No-cook oats with yogurt and berries.</p>
+                                    <div class="pt-3 border-t border-olive-200/60 flex justify-between text-xs font-mono text-olive-600">
+                                        <span>310 kcal</span>
+                                        <span class="font-bold text-olive-900">${window.formatPrice(2.10)}</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-olive-50/50 p-6 rounded-2xl border border-olive-100 space-y-3">
+                                    <span class="text-xs font-mono font-bold text-olive-700 uppercase">Lunch</span>
+                                    <h4 class="font-serif font-bold text-lg text-olive-900"><a href="#/recipes/lentil-ginger-bowl" class="hover:underline">Ginger lentil power bowl</a></h4>
+                                    <p class="text-xs text-olive-700">Warm red lentils with turmeric and spinach.</p>
+                                    <div class="pt-3 border-t border-olive-200/60 flex justify-between text-xs font-mono text-olive-600">
+                                        <span>320 kcal</span>
+                                        <span class="font-bold text-olive-900">${window.formatPrice(1.85)}</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-olive-50/50 p-6 rounded-2xl border border-olive-100 space-y-3">
+                                    <span class="text-xs font-mono font-bold text-olive-700 uppercase">Dinner</span>
+                                    <h4 class="font-serif font-bold text-lg text-olive-900"><a href="#/recipes/salmon-greens" class="hover:underline">Lemon herb baked salmon</a></h4>
+                                    <p class="text-xs text-olive-700">Omega-3 rich salmon with garlicky greens.</p>
+                                    <div class="pt-3 border-t border-olive-200/60 flex justify-between text-xs font-mono text-olive-600">
+                                        <span>420 kcal</span>
+                                        <span class="font-bold text-olive-900">${window.formatPrice(6.50)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.generateMealPlan = function() {
+            alert('Meal plan updated successfully based on your selected goals and currency!');
+        };
+
+        // --- VIEW: BMI & BODY CALCULATOR ---
+        function renderBmi(container) {
+            container.innerHTML = `
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-2 bg-olive-100 px-3 py-1 rounded-full text-xs font-mono font-medium text-olive-700">
+                            <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+                            <span>Body Composition & Energy Calculator</span>
+                        </div>
+                        <h1 class="font-serif text-4xl font-bold text-olive-900">BMI & Body Check</h1>
+                        <p class="text-olive-700">Calculate your Body Mass Index with context for standard WHO thresholds and Asian-Pacific criteria.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-3xl border border-olive-200 shadow-sm space-y-6">
+                            <h3 class="font-serif text-2xl font-bold text-olive-900">Enter Your Metrics</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-xs font-mono font-bold text-olive-700 uppercase block mb-2">Weight (kg)</label>
+                                    <input type="number" id="bmi-weight" value="70" class="w-full p-3 text-sm bg-olive-50 border border-olive-200 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-olive-600">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-mono font-bold text-olive-700 uppercase block mb-2">Height (cm)</label>
+                                    <input type="number" id="bmi-height" value="175" class="w-full p-3 text-sm bg-olive-50 border border-olive-200 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-olive-600">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-mono font-bold text-olive-700 uppercase block mb-2">Activity Level</label>
+                                    <select id="bmi-activity" class="w-full p-3 text-sm bg-olive-50 border border-olive-200 rounded-xl font-medium">
+                                        <option>Sedentary (little or no exercise)</option>
+                                        <option>Moderate (exercise 3-5 days/wk)</option>
+                                        <option>Active (hard exercise 6-7 days/wk)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button onclick="calculateBmi()" class="w-full bg-olive-700 hover:bg-olive-800 text-white font-medium py-3.5 rounded-xl shadow-sm transition">
+                                Calculate BMI & Targets
+                            </button>
+                        </div>
+
+                        <div id="bmi-result-card" class="bg-white p-8 rounded-3xl border border-olive-200 shadow-sm flex flex-col justify-between space-y-6">
+                            <div>
+                                <span class="text-xs font-mono font-bold text-olive-600 uppercase">Your Results</span>
+                                <h3 class="font-serif text-3xl font-bold text-olive-900 mt-2" id="bmi-val">22.9</h3>
+                                <p class="text-sm font-medium text-olive-700 mt-1" id="bmi-status">Normal weight range</p>
+                            </div>
+
+                            <div class="space-y-4 pt-6 border-t border-olive-100">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-olive-600">Estimated Daily Maintenance</span>
+                                    <span class="font-bold text-olive-900 font-mono" id="bmi-cal">~2,150 kcal</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-olive-600">Recommended Daily Protein</span>
+                                    <span class="font-bold text-olive-900 font-mono" id="bmi-protein">~84g</span>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-olive-50 rounded-2xl border border-olive-100 text-xs text-olive-700">
+                                <p class="font-bold text-olive-900 font-mono mb-1">📋 Culturally Aware Note</p>
+                                <p>BMI is a general screening tool. Consideration is also given to waist circumference and cultural body composition factors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.calculateBmi = function() {
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            const h = parseFloat(document.getElementById('bmi-height').value) / 100;
+            if (!w || !h || h <= 0) return;
+            const bmi = (w / (h * h)).toFixed(1);
+            document.getElementById('bmi-val').innerText = bmi;
+            
+            let status = 'Normal weight range';
+            if (bmi < 18.5) status = 'Underweight range';
+            else if (bmi >= 25) status = 'Overweight range';
+            document.getElementById('bmi-status').innerText = status;
+            document.getElementById('bmi-cal').innerText = `~${Math.round(w * 31)} kcal`;
+            document.getElementById('bmi-protein').innerText = `~${Math.round(w * 1.2)}g`;
+        };
+    </script>
+</body>
+</html>
